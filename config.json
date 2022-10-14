@@ -1,0 +1,8 @@
+{
+    "webhook" : "",
+    "alchemyAPI" : "f44h2ct13RJgvC_bT58tQrNhI_Z228yo",
+    "mongoURI" : "mongodb+srv://testUser:GVdbiePp6zRT3sDB@web3cluster.odwg9.mongodb.net/?retryWrites=true&w=majority&authMechanism=DEFAULT",
+    "mongoDB": "walletDB",
+    "mongoCollection" : "addresses"
+}
+
