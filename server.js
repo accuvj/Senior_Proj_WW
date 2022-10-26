@@ -127,6 +127,7 @@ async function formatRequest(req){
       let numSales = tokenInfo.numSales;
       let tokenImg = tokenInfo.imageURL;
       let tokenName = tokenInfo.tokenName;
+      let collectionName = tokenInfo.collectionName;
       let slug = `https://opensea.io/collection/${tokenInfo.slug}`;
       let [saleType, user, userAddress] = await queryDB(tokenFrom, tokenTo);
       let holderCount = await getHolderCount(userAddress, contractAddress);     
@@ -200,7 +201,22 @@ async function sendMarketTransferToDiscord(marketPlace, avatarURL, saleType, tok
   })
 }
 
-async function sendMintToDiscord(fromAddress, tokenName, contractAddress, tokenImg, tokenId, value, collectionLink, userAddress, user){
+async function sendMintToDiscord(amt, collectionName, txHash, contractAddress, tokenImg, value, tokenImg, userAddress, slug, user){
+  const embed = new Discord.MessageEmbed()
+    .setTitle(`NEW MINT OF ${amt}: ${collectionName}`)
+    .setColor("#ffffff")
+    .setURL(`https://www.etherscan.io/tx/${txHash}`)
+    .setThumbnail(tokenImg)
+    .addField("User", `${user}`, true)
+    .addField("Relevant Links", `<:opensea:1014994189999685632> [OpenSea Collection](${slug})\n<:nerds:1014994223491207238> [NFTNerds Link](https://nftnerds.ai/collection/${contractAddress}/liveview)\n<:eth:1014992545538904134> [User Address](https://etherscan.io/address/${userAddress})`, false)
+    .addField("Value", `${value}Ξ`, false)
+    .setTimestamp()
+
+  webhookClient.send({
+      username: `MINT MONITOR`,
+      avatarURL: avatarURL,
+      embeds: [embed]
+  })
 }
 
 async function sendGemSweepToDiscord(amt, contractAddress, collectionName, collectionLink, collectionImg, value, txHash, user="test"){
@@ -208,7 +224,7 @@ async function sendGemSweepToDiscord(amt, contractAddress, collectionName, colle
   const embed = new Discord.MessageEmbed()
     .setTitle(`${amt} ${collectionName} Gem Swept for ${value}Ξ `)
     .setColor("#f771b5")
-    .setURL(`https://www.etherscan.com/tx/${txHash}`)
+    .setURL(`https://www.etherscan.io/tx/${txHash}`)
     .addField("Relevant Links", `<:opensea:1014994189999685632> [OpenSea Collection](${collectionLink})\n<:nerds:1014994223491207238> [NFTNerds Link](https://nftnerds.ai/collection/${contractAddress}/liveview)\n<:eth:1014992545538904134> [Buyer Address](${collectionLink})`, false)
     .addField("Buyer", `${user}`, false)
     .setThumbnail("https://i.gifer.com/Z23Y.gif")
